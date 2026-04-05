@@ -1,12 +1,15 @@
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { fetchCountyBusinesses } from "./lib/googlePlaces";
-import type { BusinessPlace } from "./types/businesses";
+import { fetchCountyRankings } from "./services/inferenceApi";
+import type { BusinessPlace, InferenceRequest, RankedCounty } from "./types/businesses";
 
 export type MapCounty = {
     stateId: string;
     countyId: string;
     name: string;
 };
+//antony
+export type CountyRankingMap = Record<string, RankedCounty>;
 
 const MapContext = createContext<{
     // Represented by tuple of state id, and county id
@@ -19,6 +22,16 @@ const MapContext = createContext<{
     businesses: BusinessPlace[];
     isFetchingBusinesses: boolean;
     businessError: string | null;
+
+    //antony
+    inferenceInputs: InferenceRequest | null;
+    rankedCounties: RankedCounty[];
+    rankedCountyMap: CountyRankingMap;
+    isRunningInference: boolean;
+    inferenceError: string | null;
+    runInference: (payload: InferenceRequest) => Promise<void>;
+    clearInferenceResults: () => void;
+    selectedCountyResult: RankedCounty | null;
 }>({
     county: null,
     setCounty: () => {},
@@ -29,6 +42,16 @@ const MapContext = createContext<{
     businesses: [],
     isFetchingBusinesses: false,
     businessError: null,
+
+    //antony
+    inferenceInputs: null,
+    rankedCounties: [],
+    rankedCountyMap: {},
+    isRunningInference: false,
+    inferenceError: null,
+    runInference: async () => {},
+    clearInferenceResults: () => {},
+    selectedCountyResult: null,
 });
 
 type MapState = {
@@ -45,7 +68,29 @@ export function MapProvider({ children }: React.PropsWithChildren) {
     const [isFetchingBusinesses, setIsFetchingBusinesses] = useState(false);
     const [businessError, setBusinessError] = useState<string | null>(null);
 
-    const setCountyWithBusinessTypeCheck = useCallback((county: MapCounty) => {
+    //antony
+    const [inferenceInputs, setInferenceInputs] = useState<InferenceRequest | null>(null);
+    const [rankedCounties, setRankedCounties] = useState<RankedCounty[]>([]);
+    const [isRunningInference, setIsRunningInference] = useState(false);
+    const [inferenceError, setInferenceError] = useState<string | null>(null);
+
+    //antony
+    const rankedCountyMap = useMemo<CountyRankingMap>(() => {
+            return rankedCounties.reduce<CountyRankingMap>((acc, county) => {
+                acc[county.county.trim().toLowerCase()] = county;
+                return acc;
+            }, {});
+    }, [rankedCounties]);
+    const selectedCountyResult = useMemo(() => {
+            if (!mapState.county) return null;
+
+            const countyKey = `${mapState.county.name}, ga`.toLowerCase();
+            return rankedCountyMap[countyKey] ?? null;
+    }, [mapState.county, rankedCountyMap]);
+
+
+
+    /*const setCountyWithBusinessTypeCheck = useCallback((county: MapCounty) => {
         setMapState((s) => {
             if (s.businessType == null) return s; // Don't allow changes to selected county if 
                                                   // business type hasn't been specified.
@@ -55,7 +100,60 @@ export function MapProvider({ children }: React.PropsWithChildren) {
                 county
             };
         });
-    }, [setMapState]);
+    }, [setMapState]);*/
+    //antony
+    const setCountyWithBusinessTypeCheck = useCallback((county: MapCounty) => {
+            setMapState((s) => {
+                if (rankedCounties.length === 0) return s;
+
+                return {
+                    businessType: s.businessType,
+                    county
+                };
+            });
+    }, [setMapState, rankedCounties.length]);
+    const runInference = useCallback(async (payload: InferenceRequest) => {
+        setIsRunningInference(true);
+        setInferenceError(null);
+
+        try {
+            const results = await fetchCountyRankings(payload);
+
+            setInferenceInputs(payload);
+            setRankedCounties(results);
+
+            setMapState((s) => ({
+                ...s,
+                businessType: payload.sector,
+                county: results.length > 0
+                    ? {
+                        name: results[0].county.replace(", GA", ""),
+                        stateId: "13",
+                        countyId: s.county?.countyId ?? "",
+                    }
+                    : s.county,
+            }));
+        } catch (error) {
+            setInferenceError(
+                error instanceof Error
+                    ? error.message
+                    : "Unable to fetch ranked county results."
+            );
+            setRankedCounties([]);
+        } finally {
+            setIsRunningInference(false);
+        }
+    }, []);
+    const clearInferenceResults = useCallback(() => {
+        setInferenceInputs(null);
+        setRankedCounties([]);
+        setInferenceError(null);
+
+        setMapState((s) => ({
+            ...s,
+            county: null,
+        }));
+    }, []);
 
     useEffect(() => {
         if (!mapState.county || !mapState.businessType) {
@@ -125,6 +223,14 @@ export function MapProvider({ children }: React.PropsWithChildren) {
                 businesses,
                 isFetchingBusinesses,
                 businessError,
+                inferenceInputs,
+                rankedCounties,
+                rankedCountyMap,
+                isRunningInference,
+                inferenceError,
+                runInference,
+                clearInferenceResults,
+                selectedCountyResult,
             }}
         >
             {children}

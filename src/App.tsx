@@ -10,8 +10,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import { MapProvider, useMapState, type MapCounty } from "./Map";
 
-import { stringToHash } from "./util/hash";
-
 function CountySearch() {
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredCounties, setFilteredCounties] = useState<MapCounty[]>([]);
@@ -73,7 +71,7 @@ function CountySearch() {
 function RenderCounties(): React.JSX.Element {
     const geoJsonRef = useRef<L.GeoJSON>(null);
 
-    const { county, setCounty, businessType  } = useMapState();
+    const { county, setCounty, businessType, rankedCountyMap  } = useMapState();
 
     const [hoveredCounty, setHoveredCounty] = useState<MapCounty | null>(null);
 
@@ -155,41 +153,37 @@ function RenderCounties(): React.JSX.Element {
         }
 
         if (businessType) {
-            const name = feature?.properties?.NAME;
+            const countyName = feature?.properties?.NAME;
+            const countyKey = `${countyName}, ga`.toLowerCase();
+            const rankedCounty = rankedCountyMap[countyKey];
 
-            // Generate a random float in [0, 1] by hashing the county's name (deterministic
-            // pseudorandom).
-            const t = stringToHash(name);
+            if (rankedCounty) {
+                const score = rankedCounty.score / 100;
 
-            let color;
+                let color: string;
 
-            // Interpolate between dark orange and darker teal (with white in the middle)
-            // Dark orange: rgb(234, 88, 12) - for decline/negative values (t close to 0)
-            // White: rgb(255, 255, 255) - for neutral (t = 0.5)
-            // Darker teal: rgb(13, 148, 136) - for growth/positive values (t close to 1)
-            if (t < 0.5) {
-                // Dark orange to white (t=0 is dark orange, t=0.5 is white)
-                const norm = t * 2; // 0 to 1 as t goes from 0 to 0.5
-                const r = 234 + (255 - 234) * norm;
-                const g = 88 + (255 - 88) * norm;
-                const b = 12 + (255 - 12) * norm;
-                color = `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
-            } else {
-                // White to darker teal (t=0.5 is white, t=1 is darker teal)
-                const norm = (t - 0.5) * 2; // 0 to 1 as t goes from 0.5 to 1
-                const r = 255 - (255 - 13) * norm;
-                const g = 255 - (255 - 148) * norm;
-                const b = 255 - (255 - 136) * norm;
-                color = `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
+                if (score < 0.5) {
+                    const norm = score * 2;
+                    const r = 234 + (255 - 234) * norm;
+                    const g = 88 + (255 - 88) * norm;
+                    const b = 12 + (255 - 12) * norm;
+                    color = `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
+                } else {
+                    const norm = (score - 0.5) * 2;
+                    const r = 255 - (255 - 13) * norm;
+                    const g = 255 - (255 - 148) * norm;
+                    const b = 255 - (255 - 136) * norm;
+                    color = `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
+                }
+
+                return {
+                    fillColor: color,
+                    weight: 1.5,
+                    opacity: 0.9,
+                    color: "#475569",
+                    fillOpacity: 0.75,
+                };
             }
-
-            return {
-                fillColor: color,
-                weight: 1.5,
-                opacity: 0.9,
-                color: "#475569", // Darker border
-                fillOpacity: 0.75,
-            };
         }
 
         return {
