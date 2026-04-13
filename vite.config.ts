@@ -1,6 +1,7 @@
 import tailwindcss from '@tailwindcss/vite'
 
 import react from '@vitejs/plugin-react'
+import { copyFileSync, createReadStream, existsSync, mkdirSync } from "fs"
 import path from "path"
 import { defineConfig } from 'vite'
 import type { Connect, Plugin, PreviewServer, ViteDevServer } from "vite"
@@ -70,11 +71,62 @@ function businessesApiPlugin(): Plugin {
     };
 }
 
+// ---------------------------------------------------------------------------
+// Plugin: serve analysis CSV data files at /data/* during dev + preview,
+// and copy them into dist/data/ after the production build.
+// ---------------------------------------------------------------------------
+
+const ANALYSIS_DATA_FILES: [string, string][] = [
+    [path.resolve(__dirname, "analysis/data/merged_data_v2.csv"),                    "merged_data_v2.csv"],
+    [path.resolve(__dirname, "analysis/data/qcew_long.csv"),                         "qcew_long.csv"],
+    [path.resolve(__dirname, "analysis/train_inference_scripts/static_forecasts.csv"), "static_forecasts.csv"],
+];
+
+function createAnalysisDataMiddleware(): Connect.NextHandleFunction {
+    return (req, res, next) => {
+        if (!req.url?.startsWith("/data/")) return next();
+
+        const filename = req.url.slice("/data/".length).split("?")[0];
+        const entry = ANALYSIS_DATA_FILES.find(([, name]) => name === filename);
+        if (!entry) return next();
+
+        const [srcPath] = entry;
+        if (!existsSync(srcPath)) return next();
+
+        res.setHeader("Content-Type", "text/csv; charset=utf-8");
+        res.setHeader("Cache-Control", "public, max-age=86400");
+        createReadStream(srcPath).pipe(res as unknown as NodeJS.WritableStream);
+    };
+}
+
+function analysisDataPlugin(): Plugin {
+    const handler = createAnalysisDataMiddleware();
+    return {
+        name: "terratrends-analysis-data",
+        configureServer(server: ViteDevServer) {
+            server.middlewares.use(handler);
+        },
+        configurePreviewServer(server: PreviewServer) {
+            server.middlewares.use(handler);
+        },
+        closeBundle() {
+            const distData = path.resolve(__dirname, "dist/data");
+            if (!existsSync(distData)) mkdirSync(distData, { recursive: true });
+            for (const [srcPath, name] of ANALYSIS_DATA_FILES) {
+                if (existsSync(srcPath)) {
+                    copyFileSync(srcPath, path.join(distData, name));
+                }
+            }
+        },
+    };
+}
+
 export default defineConfig({
     plugins: [
         react(),
         tailwindcss(),
         businessesApiPlugin(),
+        analysisDataPlugin(),
     ],
     resolve: {
         alias: {
