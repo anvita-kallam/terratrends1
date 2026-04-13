@@ -170,7 +170,6 @@ function RenderCounties(): React.JSX.Element {
 
             if (!name) return;
 
-            const path = layer as L.Path;
             layer.on("mousedown", () => {
                 setCounty?.({ stateId, countyId, name });
             });
