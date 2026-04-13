@@ -2,7 +2,8 @@ import { useMapState } from "@/Map";
 import { VALID_HORIZONS, VALID_SECTORS } from "@/constants/sectors";
 import type { BusinessPlace, InferenceRequest, RankedCounty } from "@/types/businesses";
 import { useMemo, useState } from "react";
-import { Line, LineChart } from "recharts";
+import { CartesianGrid, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { countyGdpData } from "@/data/countyGdp";
 
 const SideBarTabNames = {
 	demographics: "Demographics",
@@ -131,57 +132,35 @@ function Demographics() {
 }
 **/
 
-function SampleChart() {
+function GdpChart({ countyName }: { countyName: string }) {
+	const entry = countyGdpData[countyName.toLowerCase()];
+	const data = entry?.data ?? countyGdpData["georgia"].data;
+	const label = entry ? `${entry.name} County` : "Georgia (state)";
+
+	const hasNegative = data.some((d) => (d.gdpChange ?? 0) < 0);
+
 	return (
-		<LineChart
-		className="border-2 rounded-2xl border-slate-300"
-		style={{
-			width: "100%",
-			aspectRatio: 1.618,
-			maxWidth: 600,
-		}}
-		responsive
-		data={[
-			{
-				name: "Page A",
-				uv: 400,
-				pv: 2400,
-				amt: 2400,
-			},
-			{
-				name: "Page B",
-				uv: 300,
-				pv: 4567,
-				amt: 2400,
-			},
-			{
-				name: "Page C",
-				uv: 320,
-				pv: 1398,
-				amt: 2400,
-			},
-			{
-				name: "Page D",
-				uv: 200,
-				pv: 9800,
-				amt: 2400,
-			},
-			{
-				name: "Page E",
-				uv: 278,
-				pv: 3908,
-				amt: 2400,
-			},
-			{
-				name: "Page F",
-				uv: 189,
-				pv: 4800,
-				amt: 2400,
-			},
-		]}
-		>
-		<Line dataKey="uv"></Line>
-		</LineChart>
+		<div className="border border-slate-200 rounded-2xl p-3 bg-white">
+		<p className="text-xs font-semibold text-slate-500 mb-2">GDP % Change · {label}</p>
+		<ResponsiveContainer width="100%" aspect={1.618}>
+			<LineChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: -16 }}>
+			<CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+			<XAxis dataKey="year" tick={{ fontSize: 11 }} />
+			<YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `${v}%`} />
+			<Tooltip formatter={(v: number) => [`${v}%`, "GDP Change"]} />
+			{hasNegative && <ReferenceLine y={0} stroke="#94a3b8" strokeDasharray="3 3" />}
+			<Line
+				type="monotone"
+				dataKey="gdpChange"
+				stroke="#2563eb"
+				strokeWidth={2}
+				dot={{ r: 3, fill: "#2563eb" }}
+				activeDot={{ r: 5 }}
+				connectNulls
+			/>
+			</LineChart>
+		</ResponsiveContainer>
+		</div>
 	);
 }
 
@@ -363,14 +342,6 @@ function InferenceForm() {
 		</div>
 	);
 }
-
-
-
-
-
-
-
-
 
 function BusinessCard({ business, index }: { business: BusinessPlace; index: number }) {
 	const typeList = business.types.slice(0, 3).map((type) => type.replace(/_/g, " "));
@@ -672,7 +643,7 @@ export default function Sidebar(): React.JSX.Element {
 					</div>
 					)}
 
-					<SampleChart />
+					<GdpChart countyName={county.name} />
 					</div>
 				) : (
 				<RankedCountiesList />

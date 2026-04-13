@@ -64,23 +64,24 @@ export function MapProvider({ children }: React.PropsWithChildren) {
         county: null,
         businessType: null,
     });
+
+	// business competition metric logic
     const [businesses, setBusinesses] = useState<BusinessPlace[]>([]);
     const [isFetchingBusinesses, setIsFetchingBusinesses] = useState(false);
     const [businessError, setBusinessError] = useState<string | null>(null);
 
-    //antony
     const [inferenceInputs, setInferenceInputs] = useState<InferenceRequest | null>(null);
     const [rankedCounties, setRankedCounties] = useState<RankedCounty[]>([]);
     const [isRunningInference, setIsRunningInference] = useState(false);
     const [inferenceError, setInferenceError] = useState<string | null>(null);
 
-    //antony
     const rankedCountyMap = useMemo<CountyRankingMap>(() => {
             return rankedCounties.reduce<CountyRankingMap>((acc, county) => {
                 acc[county.county.trim().toLowerCase()] = county;
                 return acc;
             }, {});
     }, [rankedCounties]);
+
     const selectedCountyResult = useMemo(() => {
             if (!mapState.county) return null;
 
@@ -88,19 +89,6 @@ export function MapProvider({ children }: React.PropsWithChildren) {
             return rankedCountyMap[countyKey] ?? null;
     }, [mapState.county, rankedCountyMap]);
 
-
-
-    /*const setCountyWithBusinessTypeCheck = useCallback((county: MapCounty) => {
-        setMapState((s) => {
-            if (s.businessType == null) return s; // Don't allow changes to selected county if 
-                                                  // business type hasn't been specified.
-
-            return {
-                businessType: s.businessType,
-                county
-            };
-        });
-    }, [setMapState]);*/
     const rankedCountiesRef = useRef(rankedCounties);
     useEffect(() => { rankedCountiesRef.current = rankedCounties; }, [rankedCounties]);
 
@@ -115,6 +103,7 @@ export function MapProvider({ children }: React.PropsWithChildren) {
                 };
             });
     }, [setMapState]);
+
     const runInference = useCallback(async (payload: InferenceRequest) => {
         setIsRunningInference(true);
         setInferenceError(null);
@@ -147,6 +136,7 @@ export function MapProvider({ children }: React.PropsWithChildren) {
             setIsRunningInference(false);
         }
     }, []);
+
     const clearInferenceResults = useCallback(() => {
         setInferenceInputs(null);
         setRankedCounties([]);
