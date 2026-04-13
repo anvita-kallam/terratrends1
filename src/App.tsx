@@ -85,6 +85,22 @@ function CountySearch() {
     );
 }
 
+function contrastBorderColor(fillColor: string): string {
+    let r: number, g: number, b: number;
+    if (fillColor.startsWith("#")) {
+        const hex = fillColor.slice(1);
+        r = parseInt(hex.slice(0, 2), 16);
+        g = parseInt(hex.slice(2, 4), 16);
+        b = parseInt(hex.slice(4, 6), 16);
+    } else {
+        const m = fillColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+        if (!m) return "#1e293b";
+        [, r, g, b] = m.map(Number) as [string, number, number, number];
+    }
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    return luminance > 0.55 ? "#1e293b" : "#f8fafc";
+}
+
 /**
  * Renders the counties on our ReactLeaflet map. Depends on MapContextProvider.
  */
@@ -172,7 +188,9 @@ function RenderCounties(): React.JSX.Element {
                 props?.STATE?.toString() === county.stateId &&
                 props?.COUNTY?.toString() === county.countyId
             ) {
-                path.setStyle({ weight: 2.5, color: "#2b236b", opacity: 1 });
+                const style = getCountyStyleRef.current(path.feature) as { fillColor?: string };
+                const borderColor = contrastBorderColor(style.fillColor ?? "#d6e7ff");
+                path.setStyle({ weight: 3, color: borderColor, opacity: 1 });
                 path.bringToFront();
                 selectedLayerRef.current = path;
             }
