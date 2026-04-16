@@ -54,7 +54,7 @@ function CountySearch() {
     };
 
     return (
-        <div className="bg-white/95 backdrop-blur-sm p-3 rounded-2xl shadow-lg border border-emerald-100 relative">
+        <div className="bg-white p-3 rounded-lg border border-slate-300 relative">
             <label className="block text-[11px] uppercase tracking-[0.14em] text-slate-500 font-semibold mb-2">
                 County Search
             </label>
@@ -62,7 +62,7 @@ function CountySearch() {
                 <svg
                     aria-hidden="true"
                     viewBox="0 0 24 24"
-                    className="w-4 h-4 text-emerald-500 absolute left-3 top-1/2 -translate-y-1/2"
+                    className="w-4 h-4 text-emerald-700 absolute left-3 top-1/2 -translate-y-1/2"
                 >
                     <path
                         fill="currentColor"
@@ -74,18 +74,18 @@ function CountySearch() {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search counties..."
-                    className="w-72 pl-9 pr-3 py-2.5 border border-slate-200 rounded-xl bg-white text-slate-800 focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-400 transition-all duration-200"
+                    className="w-72 pl-9 pr-3 py-2.5 border border-slate-300 rounded-md bg-white text-slate-900 hover:border-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-700/20 focus:border-emerald-700 transition-all duration-200"
                 />
             </div>
             {showDropdown && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-slate-200 max-h-64 overflow-y-auto z-10">
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-md border border-slate-300 max-h-64 overflow-y-auto z-10">
                     {filteredCounties.map((county) => {
                         const rank = rankedCountyMap[`${county.name}, ga`.toLowerCase()]?.rank;
                         return (
                         <div
                             key={`${county.stateId}-${county.countyId}`}
                             onClick={() => handleCountySelect(county)}
-                            className="p-3 hover:bg-emerald-50/80 cursor-pointer border-b border-slate-100 last:border-b-0 flex items-center justify-between transition-colors duration-200"
+                            className="p-3 hover:bg-slate-100 cursor-pointer border-b border-slate-200 last:border-b-0 flex items-center justify-between transition-colors duration-200"
                         >
                             <p className="text-sm font-medium text-slate-700">{county.name}</p>
                             {rank !== undefined && (
@@ -309,10 +309,10 @@ function RenderCounties(): React.JSX.Element {
 function App() {
     return (
         <MapProvider>
-            <div className="flex flex-row w-screen h-screen bg-gradient-to-br from-[#eef5f1] via-[#edf3f8] to-[#edf7f0] p-4 gap-4">
+            <div className="flex flex-row w-screen h-screen bg-[#f4f7f6] p-3 gap-3">
                 <Sidebar />
                 <div className="w-full flex flex-col relative">
-                    <div className="bg-[#eef4ef] border border-emerald-100 rounded-3xl shadow-[0_12px_38px_rgba(15,23,42,0.08)] overflow-hidden h-full">
+                    <div className="bg-[#eef2ef] border border-slate-300 rounded-lg overflow-hidden h-full">
                         <MapContainer
                             center={[33.275, -84.441]}
                             minZoom={7.5}
@@ -328,11 +328,11 @@ function App() {
                         </MapContainer>
                     </div>
                 </div>
-                <div className="absolute top-4 right-4 z-1000 flex flex-col gap-3">
-                    <div className="bg-white/95 backdrop-blur-sm p-4 rounded-2xl flex flex-col gap-3 shadow-lg border border-emerald-100">
+                <div className="absolute top-4 right-4 z-1000 flex flex-col gap-2">
+                    <div className="bg-white p-4 rounded-lg flex flex-col gap-3 border border-slate-300">
                         <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Data Legend</p>
                         <h1 className="font-semibold text-xl text-slate-800">Forecasted Growth</h1>
-                        <div className="w-72 h-10 rounded-xl border border-slate-200 shadow-inner" style={{background: 'linear-gradient(to right, #ea580c, white, #0d9488)'}}></div>
+                        <div className="w-72 h-9 rounded-md border border-slate-300" style={{background: 'linear-gradient(to right, #ea580c, white, #0d9488)'}}></div>
                         <div className="grid grid-cols-2 text-xs text-slate-600 font-semibold uppercase tracking-wide">
                         <p style={{color: '#ea580c'}}>Decline</p>
                         <p className="text-right" style={{color: '#0d9488'}}>Growth</p>
