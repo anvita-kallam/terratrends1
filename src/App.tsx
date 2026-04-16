@@ -54,15 +54,15 @@ function CountySearch() {
     };
 
     return (
-        <div className="bg-white p-3 rounded-lg border border-emerald-300 relative">
-            <label className="block text-[11px] uppercase tracking-[0.14em] text-slate-500 font-semibold mb-2">
+        <div className="bg-emerald-950/95 p-3 rounded-lg border border-emerald-500/50 shadow-[0_0_18px_rgba(16,185,129,0.25)] relative">
+            <label className="block text-[11px] uppercase tracking-[0.14em] text-emerald-300 font-semibold mb-2">
                 County Search
             </label>
             <div className="relative">
                 <svg
                     aria-hidden="true"
                     viewBox="0 0 24 24"
-                    className="w-4 h-4 text-emerald-700 absolute left-3 top-1/2 -translate-y-1/2"
+                    className="w-4 h-4 text-emerald-300 absolute left-3 top-1/2 -translate-y-1/2"
                 >
                     <path
                         fill="currentColor"
@@ -74,20 +74,20 @@ function CountySearch() {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search counties..."
-                    className="w-72 pl-9 pr-3 py-2.5 border border-emerald-200 rounded-md bg-white text-slate-900 hover:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-700/20 focus:border-emerald-700 transition-all duration-200"
+                    className="w-72 pl-9 pr-3 py-2.5 border border-emerald-700/70 rounded-md bg-emerald-900/60 text-emerald-50 placeholder:text-emerald-200/60 hover:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-400/30 focus:border-emerald-300 transition-all duration-200"
                 />
             </div>
             {showDropdown && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-md border border-emerald-300 max-h-64 overflow-y-auto z-10">
+                <div className="absolute top-full left-0 right-0 mt-2 bg-emerald-950 rounded-md border border-emerald-600/70 shadow-[0_0_20px_rgba(16,185,129,0.28)] max-h-64 overflow-y-auto z-10">
                     {filteredCounties.map((county) => {
                         const rank = rankedCountyMap[`${county.name}, ga`.toLowerCase()]?.rank;
                         return (
                         <div
                             key={`${county.stateId}-${county.countyId}`}
                             onClick={() => handleCountySelect(county)}
-                            className="p-3 hover:bg-emerald-50 cursor-pointer border-b border-slate-200 last:border-b-0 flex items-center justify-between transition-colors duration-200"
+                            className="p-3 hover:bg-emerald-800/40 cursor-pointer border-b border-emerald-900/80 last:border-b-0 flex items-center justify-between transition-colors duration-200"
                         >
-                            <p className="text-sm font-medium text-slate-700">{county.name}</p>
+                            <p className="text-sm font-medium text-emerald-50">{county.name}</p>
                             {rank !== undefined && (
                                 <p className="text-xs text-emerald-700 font-semibold ml-2">#{rank}</p>
                             )}
@@ -309,10 +309,10 @@ function RenderCounties(): React.JSX.Element {
 function App() {
     return (
         <MapProvider>
-            <div className="flex flex-row w-screen h-screen bg-[#f0f6f2] p-3 gap-3">
+            <div className="flex flex-row w-screen h-screen bg-[#03140f] p-3 gap-3">
                 <Sidebar />
                 <div className="w-full flex flex-col relative">
-                    <div className="bg-[#edf4ef] border border-emerald-300 rounded-lg overflow-hidden h-full">
+                    <div className="bg-[#071c15] border border-emerald-700/70 rounded-lg overflow-hidden h-full shadow-[0_0_22px_rgba(16,185,129,0.2)]">
                         <MapContainer
                             center={[33.275, -84.441]}
                             minZoom={7.5}
@@ -329,11 +329,11 @@ function App() {
                     </div>
                 </div>
                 <div className="absolute top-4 right-4 z-1000 flex flex-col gap-2">
-                    <div className="bg-white p-4 rounded-lg flex flex-col gap-3 border border-emerald-300">
-                        <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Data Legend</p>
-                        <h1 className="font-semibold text-xl text-slate-800">Forecasted Growth</h1>
-                        <div className="w-72 h-9 rounded-md border border-slate-300" style={{background: 'linear-gradient(to right, #ea580c, white, #0d9488)'}}></div>
-                        <div className="grid grid-cols-2 text-xs text-slate-600 font-semibold uppercase tracking-wide">
+                    <div className="bg-emerald-950/95 p-4 rounded-lg flex flex-col gap-3 border border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.25)]">
+                        <p className="text-[11px] uppercase tracking-[0.14em] text-emerald-300 font-semibold">Data Legend</p>
+                        <h1 className="font-semibold text-xl text-emerald-50">Forecasted Growth</h1>
+                        <div className="w-72 h-9 rounded-md border border-emerald-500/40" style={{background: 'linear-gradient(to right, #ea580c, white, #0d9488)'}}></div>
+                        <div className="grid grid-cols-2 text-xs text-emerald-200 font-semibold uppercase tracking-wide">
                         <p style={{color: '#ea580c'}}>Decline</p>
                         <p className="text-right" style={{color: '#0d9488'}}>Growth</p>
                         </div>
