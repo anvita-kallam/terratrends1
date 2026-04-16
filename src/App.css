@@ -10,3 +10,22 @@
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
+
+.leaflet-container {
+  background: linear-gradient(180deg, #f4f8f5 0%, #eef4ef 100%);
+}
+
+.leaflet-interactive {
+  transition: fill-opacity 180ms ease, stroke 180ms ease, stroke-width 180ms ease, opacity 180ms ease;
+}
+
+.county-tooltip {
+  border: 1px solid #d1fae5;
+  background: rgba(255, 255, 255, 0.96);
+  color: #0f172a;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}

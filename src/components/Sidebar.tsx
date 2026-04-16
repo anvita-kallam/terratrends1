@@ -224,19 +224,22 @@ function InferenceForm() {
 	}
 
 	return (
-		<div className="p-6 flex flex-col gap-5 overflow-y-auto">
+		<div className="p-6 flex flex-col gap-6 overflow-y-auto">
 		<div className="flex flex-col gap-2">
-		<h2 className="text-xl font-bold text-slate-800">Rank Georgia counties</h2>
-		<p className="text-sm text-slate-600">
+		<p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Terratrends Intelligence</p>
+		<h2 className="text-3xl font-bold text-slate-900 leading-tight">Rank Georgia counties</h2>
+		<p className="text-sm text-slate-600 leading-relaxed">
 		Enter your business details to rank all 159 Georgia counties by expansion potential.
 			</p>
 		</div>
 
-		<form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+		<form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+		<div className="rounded-2xl border border-emerald-100 bg-emerald-50/40 p-4 flex flex-col gap-3">
+		<p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Business Info</p>
 		<div className="flex flex-col gap-2">
 		<label className="text-sm font-medium text-slate-700">Business description</label>
 		<textarea
-		className="rounded-xl border border-slate-300 px-3 py-2 min-h-24 resize-y"
+		className="rounded-xl border border-slate-300 px-3 py-2.5 min-h-24 resize-y bg-white hover:border-emerald-300 focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all duration-200"
 		value={businessDescription}
 		onChange={(e) => setBusinessDescription(e.target.value)}
 		placeholder="Describe your business idea, target customers, and what makes it unique."
@@ -247,7 +250,7 @@ function InferenceForm() {
 		<div className="flex flex-col gap-2">
 		<label className="text-sm font-medium text-slate-700">Sector</label>
 		<select
-		className="rounded-xl border border-slate-300 px-3 py-2 bg-white"
+		className="rounded-xl border border-slate-300 px-3 py-2.5 bg-white hover:border-emerald-300 focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all duration-200"
 		value={form.sector}
 		onChange={(e) =>
 			setForm((prev) => ({ ...prev, sector: e.target.value }))
@@ -262,11 +265,14 @@ function InferenceForm() {
 		</select>
 		{errors.sector && <p className="text-sm text-red-600">{errors.sector}</p>}
 		</div>
+		</div>
 
+		<div className="rounded-2xl border border-emerald-100 bg-white p-4 flex flex-col gap-3">
+		<p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Financials</p>
 		<div className="flex flex-col gap-2">
 		<label className="text-sm font-medium text-slate-700">Revenue</label>
 		<input
-		className="rounded-xl border border-slate-300 px-3 py-2"
+		className="rounded-xl border border-slate-300 px-3 py-2.5 bg-white hover:border-emerald-300 focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all duration-200"
 		type="number"
 		step="1"
 		value={form.revenue}
@@ -281,7 +287,7 @@ function InferenceForm() {
 		<div className="flex flex-col gap-2">
 		<label className="text-sm font-medium text-slate-700">Employee count</label>
 		<input
-		className="rounded-xl border border-slate-300 px-3 py-2"
+		className="rounded-xl border border-slate-300 px-3 py-2.5 bg-white hover:border-emerald-300 focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all duration-200"
 		type="number"
 		step="1"
 		value={form.employee_count}
@@ -294,11 +300,14 @@ function InferenceForm() {
 			<p className="text-sm text-red-600">{errors.employee_count}</p>
 		)}
 		</div>
+		</div>
 
+		<div className="rounded-2xl border border-emerald-100 bg-white p-4 flex flex-col gap-3">
+		<p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Forecast Settings</p>
 		<div className="flex flex-col gap-2">
 		<label className="text-sm font-medium text-slate-700">Founding year</label>
 		<input
-		className="rounded-xl border border-slate-300 px-3 py-2"
+		className="rounded-xl border border-slate-300 px-3 py-2.5 bg-white hover:border-emerald-300 focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all duration-200"
 		type="number"
 		step="1"
 		value={form.founding_year}
@@ -315,7 +324,7 @@ function InferenceForm() {
 		<div className="flex flex-col gap-2">
 		<label className="text-sm font-medium text-slate-700">Forecast horizon</label>
 		<select
-		className="rounded-xl border border-slate-300 px-3 py-2 bg-white"
+		className="rounded-xl border border-slate-300 px-3 py-2.5 bg-white hover:border-emerald-300 focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all duration-200"
 		value={form.horizon}
 		onChange={(e) =>
 			setForm((prev) => ({
@@ -332,6 +341,7 @@ function InferenceForm() {
 		</select>
 		{errors.horizon && <p className="text-sm text-red-600">{errors.horizon}</p>}
 		</div>
+		</div>
 
 		<div className="flex gap-3">
 		<button
@@ -340,7 +350,7 @@ function InferenceForm() {
 		className={`flex-1 p-4 rounded-xl font-semibold text-base transition-all duration-200 ${
 			isRunningInference
 				? "bg-slate-200 text-slate-500 cursor-not-allowed"
-				: "bg-blue-600 text-white hover:bg-blue-700"
+				: "bg-gradient-to-r from-emerald-600 to-teal-500 text-white hover:-translate-y-0.5 hover:shadow-lg hover:shadow-emerald-200"
 		}`}
 		>
 		{isRunningInference ? "Ranking counties..." : "Run county ranking"}
@@ -350,7 +360,7 @@ function InferenceForm() {
 			<button
 			type="button"
 			onClick={clearInferenceResults}
-			className="p-4 rounded-xl font-semibold text-base border border-slate-300 text-slate-700 hover:bg-slate-50"
+			className="p-4 rounded-xl font-semibold text-base border border-slate-300 text-slate-700 hover:bg-slate-50 transition-colors duration-200"
 			>
 			Clear
 			</button>
@@ -469,14 +479,15 @@ export default function Sidebar(): React.JSX.Element {
 	return (
 		<>
 		{/** Sidebar component */}
-		<div className="min-w-100 max-w-100 shadow-xl z-1000 max-h-screen flex flex-col overflow-hidden">
-		<div className="px-6 py-4 border-b border-slate-200 flex justify-center">
-			<div className="overflow-hidden" style={{ width: '200px', height: '72px', marginLeft: '-20px' }}>
+		<div className="min-w-100 max-w-100 rounded-3xl border border-emerald-100 bg-white/95 backdrop-blur-sm shadow-[0_14px_34px_rgba(15,23,42,0.10)] z-1000 max-h-[calc(100vh-2rem)] flex flex-col overflow-hidden">
+		<div className="px-6 py-5 border-b border-slate-200 flex justify-center bg-gradient-to-r from-emerald-50 to-white">
+			<div className="overflow-hidden relative" style={{ width: '220px', height: '72px', marginLeft: '-20px' }}>
 				<img
 					src="/TerraTrendsLogo.png"
 					alt="TerraTrends"
 					style={{ width: '200px', marginTop: '-60px' }}
 				/>
+				<span className="absolute right-0 top-1 text-emerald-600 text-lg">↗</span>
 			</div>
 		</div>
 		{rankedCounties.length === 0 ? (
