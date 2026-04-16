@@ -234,8 +234,8 @@ function InferenceForm() {
 		</div>
 
 		<form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-		<div className="rounded-md border border-slate-300 bg-white p-4 flex flex-col gap-3">
-		<p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Business Info</p>
+		<div className="rounded-md border border-emerald-300 bg-white p-4 flex flex-col gap-3">
+		<p className="text-[11px] uppercase tracking-[0.14em] text-emerald-800 font-semibold">Business Info</p>
 		<div className="flex flex-col gap-2">
 		<label className="text-sm font-medium text-slate-700">Business description</label>
 		<textarea
@@ -244,7 +244,6 @@ function InferenceForm() {
 		onChange={(e) => setBusinessDescription(e.target.value)}
 		placeholder="Describe your business idea, target customers, and what makes it unique."
 		/>
-		<p className="text-xs text-slate-500">Text input only for now (not used in scoring yet).</p>
 		</div>
 
 		<div className="flex flex-col gap-2">
@@ -267,8 +266,8 @@ function InferenceForm() {
 		</div>
 		</div>
 
-		<div className="rounded-md border border-slate-300 bg-white p-4 flex flex-col gap-3">
-		<p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Financials</p>
+		<div className="rounded-md border border-emerald-200 bg-white p-4 flex flex-col gap-3">
+		<p className="text-[11px] uppercase tracking-[0.14em] text-emerald-800 font-semibold">Financials</p>
 		<div className="flex flex-col gap-2">
 		<label className="text-sm font-medium text-slate-700">Revenue</label>
 		<input
@@ -302,8 +301,8 @@ function InferenceForm() {
 		</div>
 		</div>
 
-		<div className="rounded-md border border-slate-300 bg-white p-4 flex flex-col gap-3">
-		<p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 font-semibold">Forecast Settings</p>
+		<div className="rounded-md border border-emerald-200 bg-white p-4 flex flex-col gap-3">
+		<p className="text-[11px] uppercase tracking-[0.14em] text-emerald-800 font-semibold">Forecast Settings</p>
 		<div className="flex flex-col gap-2">
 		<label className="text-sm font-medium text-slate-700">Founding year</label>
 		<input
@@ -479,8 +478,8 @@ export default function Sidebar(): React.JSX.Element {
 	return (
 		<>
 		{/** Sidebar component */}
-		<div className="min-w-100 max-w-100 rounded-lg border border-slate-300 bg-white z-1000 max-h-[calc(100vh-1.5rem)] flex flex-col overflow-hidden">
-		<div className="px-6 py-4 border-b border-slate-300 flex justify-center bg-white">
+		<div className="min-w-100 max-w-100 rounded-lg border border-emerald-300 bg-white z-1000 max-h-[calc(100vh-1.5rem)] flex flex-col overflow-hidden">
+		<div className="px-6 py-4 border-b border-emerald-200 flex justify-center bg-white">
 			<div className="overflow-hidden relative" style={{ width: '220px', height: '72px', marginLeft: '-20px' }}>
 				<img
 					src="/TerraTrendsLogo.png"
