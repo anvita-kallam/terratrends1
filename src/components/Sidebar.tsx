@@ -193,6 +193,7 @@ function InferenceForm() {
 		rankedCounties,
 	} = useMapState();
 
+	const [businessDescription, setBusinessDescription] = useState("");
 	const [form, setForm] = useState({
 		sector: "",
 		revenue: "",
@@ -232,6 +233,17 @@ function InferenceForm() {
 		</div>
 
 		<form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+		<div className="flex flex-col gap-2">
+		<label className="text-sm font-medium text-slate-700">Business description</label>
+		<textarea
+		className="rounded-xl border border-slate-300 px-3 py-2 min-h-24 resize-y"
+		value={businessDescription}
+		onChange={(e) => setBusinessDescription(e.target.value)}
+		placeholder="Describe your business idea, target customers, and what makes it unique."
+		/>
+		<p className="text-xs text-slate-500">Text input only for now (not used in scoring yet).</p>
+		</div>
+
 		<div className="flex flex-col gap-2">
 		<label className="text-sm font-medium text-slate-700">Sector</label>
 		<select
